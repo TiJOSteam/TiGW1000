@@ -1,5 +1,3 @@
-package test;
-
 import java.io.IOException;
 
 import tigateway.TiGW1000;
@@ -7,51 +5,41 @@ import tigateway.modbus.rtu.ModbusRTU;
 import tigateway.serialport.TiSerialPort;
 import tijos.framework.util.Delay;
 
-public class test {
+/**
+ * MOBDBUS RTU 例程
+ * @author TiJOS
+ *
+ */
+public class ModbusSample {
+	
+	public static void main(String[] args) {
 
-	public static void main(String[] args) throws IOException {
+		try {
+			System.out.println("This is a modbus rtu sample.");
 
-		TiGW1000 gw1000 = TiGW1000.getInstance();
-		TiSerialPort rs485 = gw1000.getRS485(9600, 8, 1, 0);
-		
-		gw1000.relayControl(0, 1);
-		Delay.msDelay(1000);
-		gw1000.relayControl(0, 0);
-		Delay.msDelay(1000);
-		gw1000.relayControl(1, 1);
-		Delay.msDelay(1000);
-		gw1000.relayControl(1, 0);
-		
-		
-		TiSerialPort rs232 = gw1000.getRS232(9600, 8, 1,0);
-				
-		rs232.write("test".getBytes(), 0, 4);
-		
-		byte [] data = rs232.read(1000);
-		
-		if(data != null) {
-		System.out.println(new String(data));
+			TiGW1000 gw1000 = TiGW1000.getInstance();
+
+
+			// 获取RS485 9600 8 1 N
+			TiSerialPort rs485 = gw1000.getRS485(9600, 8, 1, 0);
+
+			// MODBUS RTU
+			// 通讯超时500 ms
+			ModbusRTU modbusRtu = new ModbusRTU(rs485, 500);
+
+			// MODBUS 数据处理
+			// 每5秒进行一次数据处理同时绿灯亮一次
+			while (true) {
+				gw1000.greenLED().turnOn();
+				MonitorProcess(modbusRtu);
+				gw1000.blueLED().turnOff();
+				Delay.msDelay(2000);
+			}
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		System.out.println("di0 " + gw1000.digitalInput(0));
-		System.out.println("di1 " + gw1000.digitalInput(1));
-		
-
-		
-		
-		// MODBUS RTU
-		// 通讯超时500 ms
-//		ModbusRTU modbusRtu = new ModbusRTU(rs485, 500);
-//
-//		// MODBUS 数据处理
-//		// 每5秒进行一次数据处理同时绿灯亮一次
-//		while (true) {
-//			gw1000.greenLED().turnOn();
-//			MonitorProcess(modbusRtu);
-//			gw1000.greenLED().turnOff();
-//			Delay.msDelay(5000);
-//
-//		}
 	}
 
 	/**

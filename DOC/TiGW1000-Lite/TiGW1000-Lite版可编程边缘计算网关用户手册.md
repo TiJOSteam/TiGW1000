@@ -94,7 +94,7 @@ TiGW1000-Lite是TiGW1000的简化版
 
 
 
-![gw100](./img/gw100.png)
+![gw100](.\img\gw100.png)
 
 
 
@@ -211,11 +211,18 @@ TiGW1000最大支持32个用户应用， 同时用户可选择其中一个应用
 
 TiGW1000是钛云物联的钛极OS(TiJOS)物联网操作系统的一个典型应用， 关于钛极OS(TiJOS)物联网操作系统可参考如下资源：
 
-| 资源                   | url                                          |
-| :--------------------- | -------------------------------------------- |
-| 钛极OS官网             | [www.tijos.net](http://www.tijos.net)        |
-| 钛极OS(TiJOS) 文档中心 | [http://doc.tijos.net](http://doc.tijos.net) |
-| 微信公众号 - 钛极OS    | ![WeiXin](./img/TIJOS_WEIXIN.jpg)            |
+| **名称**               | **资料链接地址**                                             | **说明**                                |
+| ---------------------- | ------------------------------------------------------------ | --------------------------------------- |
+| TiGW1000  SDK          | https://github.com/TiJOSteam/TiGW1000/tree/main/SDK/         | 包含开发指南、硬件访问API、基础例程等等 |
+| Eclipse开发环境搭建    | http://doc.tijos.net/docstore/tijos-development-course/step1-enviornment_setup/about_tistudio/ | 基于Eclipse的开发环境搭建流程           |
+| 钛极OS文档中心         | http://doc.tijos.net/docstore/                               | 钛极OS开发文档及例程                    |
+| MODBUS例程             | https://github.com/TiJOSteam/TiGW200-Cat1/tree/main/SDK/sample/modbus-rtu | Modbus  及RS485例程                     |
+| MQTT等基本例程         | https://github.com/TiJOSteam/tijos-software-example          | 标准MQTT接入例程                        |
+| 阿里云接入例程         | https://github.com/TiJOSApp/tijos-mqtt-aliyun-iot            | 阿里云IoT平台接入例程                   |
+| 腾讯云接入例程         | https://github.com/TiJOSApp/tijos-tencent-iot-explore        | 腾讯云IoT平台接入例程                   |
+| 中国移动OneNET接入例程 | https://github.com/TiJOSApp/tijos-mqtt-onenet-iot            | 中国移动OneNET接入例程                  |
+
+
 
 ## 联系方式
 
