@@ -180,7 +180,11 @@ public class TiGW1000 {
 			gpio.setWorkMode(pinId, TiGPIO.INPUT_FLOATING);
 			this.digitalInput[id] = gpio;
 		}
-
-		return this.digitalInput[id].readPin(pinId);
+		
+		//DI取反
+		if( this.digitalInput[id].readPin(pinId) > 0)
+			return 0;
+		
+		return 1;
 	}
 }

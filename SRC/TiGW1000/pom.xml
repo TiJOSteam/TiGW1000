@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>TiGW1000</groupId>
   <artifactId>TiGW1000</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <name>TiGW1000</name>
   <description>Hardware Access Packge</description>
   <build>
