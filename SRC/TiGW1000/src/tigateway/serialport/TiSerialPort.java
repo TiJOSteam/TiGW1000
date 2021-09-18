@@ -63,6 +63,10 @@ public class TiSerialPort {
 		this.uart.close();
 	}
 
+	public TiUART getUart() {
+		return this.uart;
+	}
+	
 	/**
 	 * Clear UART buffer
 	 *
@@ -71,6 +75,16 @@ public class TiSerialPort {
 	public void clearInput() throws IOException {
 
 		this.uart.clear(TiUART.BUFF_READ);
+	}
+	
+
+	/**
+	 * Available 
+	 * @return
+	 * @throws IOException
+	 */
+	public int available() throws IOException {
+		return this.uart.available();
 	}
 
 	/**
@@ -83,6 +97,10 @@ public class TiSerialPort {
 	 */
 	public void write(byte[] buffer, int start, int length) throws IOException {
 		this.uart.write(buffer, start, length);
+	}
+
+	public void write(byte[] buffer) throws IOException {
+		this.uart.write(buffer, 0, buffer.length);
 	}
 
 	/**
@@ -101,19 +119,69 @@ public class TiSerialPort {
 
 		return buffer;
 	}
+	
+	/**
+	 * read expected data within timeout
+	 * @param buffer buffer to store data 
+	 * @param timeOut timeout in milliseconds
+	 * @return actual received data length
+	 * @throws IOException
+	 */
+	public int read(byte[]buffer, int timeOut) throws IOException {
+		return this.read(buffer, 0, buffer.length,timeOut);
+	}
 
 	/**
-	 * Read data from uart
+	 * read expected data within timeout
+	 * 
+	 * @param buffer  buffer to store data
+	 * @param start   start offset of the buffer
+	 * @param length  expected read data length
+	 * @param timeOut timeout in milliseconds
+	 * @return actual received data length
+	 * @throws IOException
+	 */
+	public int read(byte[] buffer, int start, int length, int timeOut) throws IOException {
+
+		if(start + length > buffer.length) {
+			throw new IOException("invalid parameters");
+		}
+
+		long now = System.currentTimeMillis();
+		long deadline = now + timeOut;
+		int offset = start;
+		int bytesToRead = length;
+		int res = 0;
+		while ((now < deadline) && (bytesToRead > 0)) {
+			res = this.uart.read(buffer, offset, bytesToRead);
+			if (res <= 0) {
+				Delay.msDelay(10);
+				now = System.currentTimeMillis();
+				continue;
+			}
+
+			offset += res;
+			bytesToRead -= res;
+			if (bytesToRead > 0) // only to avoid redundant call of System.currentTimeMillis()
+				now = System.currentTimeMillis();
+		}
+		res = length - bytesToRead; // total bytes read
+		if (res < length) {
+			Logger.info("TiSerialPort",
+					"Read timeout(incomplete): " + Formatter.toHexString(buffer, start,  res, ""));
+		}
+
+		return res;
+	}
+
+	/**
+	 * Read all data within the time
 	 *
 	 * @param msec read all data within the time interval if there are data
 	 * @return
 	 * @throws IOException
 	 */
 	public byte[] read(int msec) throws IOException {
-
-		int avail = this.uart.available();
-		if (avail <= 0)
-			return null;
 
 		byte[] buffer = new byte[512];
 
@@ -124,11 +192,20 @@ public class TiSerialPort {
 		long start = System.currentTimeMillis();
 		while (System.currentTimeMillis() - start < msec) {
 			int len = this.uart.read(buffer, num, left);
+			if (len <= 0) {
+				Delay.msDelay(50);
+				continue;
+			}
+
 			num += len;
 			left -= len;
 
 			if (left == 0)
 				break;
+		}
+
+		if (num == 0) {
+			return null;
 		}
 
 		byte[] newBuff = new byte[num];
@@ -169,7 +246,7 @@ public class TiSerialPort {
 		res = length - bytesToRead; // total bytes read
 		if (res < length) {
 			Logger.info("TiSerialPort",
-					"Read timeout(incomplete): " + Formatter.toHexString(buffer, offset, start + res, ""));
+					"Read timeout(incomplete): " + Formatter.toHexString(buffer, start, start + res, ""));
 
 			return false;
 		} else

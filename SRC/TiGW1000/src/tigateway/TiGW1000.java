@@ -100,6 +100,34 @@ public class TiGW1000 {
 	}
 
 	/**
+	 * 通过串口获取通道
+	 * 
+	 * @param id         0 RS485 1 RS232 2/3 TTL
+	 * @param baudRate
+	 * @param dataBitNum
+	 * @param stopBitNum
+	 * @param parity
+	 * @return
+	 * @throws IOException
+	 */
+	public TiSerialPort getSerialPort(int id, int baudRate, int dataBitNum, int stopBitNum, int parity)
+			throws IOException {
+
+		switch (id) {
+		case 0:
+			return this.getRS485(baudRate, dataBitNum, stopBitNum, parity);
+		case 1:
+			return this.getRS232(baudRate, dataBitNum, stopBitNum, parity);
+		case 2:
+			return this.getTTL(0, baudRate, dataBitNum, stopBitNum, parity);
+		case 3:
+			return this.getTTL(1, baudRate, dataBitNum, stopBitNum, parity);
+		default:
+			return null;
+		}
+	}
+
+	/**
 	 * 蓝色灯
 	 * 
 	 * @return
@@ -180,11 +208,11 @@ public class TiGW1000 {
 			gpio.setWorkMode(pinId, TiGPIO.INPUT_FLOATING);
 			this.digitalInput[id] = gpio;
 		}
-		
-		//DI取反
-		if( this.digitalInput[id].readPin(pinId) > 0)
+
+		// DI取反
+		if (this.digitalInput[id].readPin(pinId) > 0)
 			return 0;
-		
+
 		return 1;
 	}
 }
